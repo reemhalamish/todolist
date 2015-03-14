@@ -1,6 +1,5 @@
 package il.ac.huji.todolist;
 
-
 import android.view.View;
 import android.widget.ArrayAdapter;
 import java.util.List;
