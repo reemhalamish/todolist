@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">todo_list</string>
+    <string name="settings_add">Add</string>
+    <string name="addDialogTitle">Add</string>
+    <string name="addDialogInsertTextHere">insert text here please :)</string>
+
+</resources>
