@@ -15,6 +15,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class TodoListManagerActivity extends ActionBarActivity {
 
     // NOTICE: the "ADD" button is with an icon, I think it adds a little bit to the overall feeling :)
