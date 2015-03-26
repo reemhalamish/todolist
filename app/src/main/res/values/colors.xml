@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="evenItemColor">#F00</color>
+    <color name="dueDatePassed">#F00</color>
+    <color name="dueDateOkay">#000</color>
     <color name="oddItemColor">#00F</color>
     <color name="defaultTextColor">#000</color>
     <color name="defaultBG">#FFF</color>

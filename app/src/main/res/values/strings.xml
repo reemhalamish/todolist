@@ -5,5 +5,7 @@
     <string name="settings_add">Add</string>
     <string name="addDialogTitle">Add</string>
     <string name="addDialogInsertTextHere">insert text here please :)</string>
+    <string name="addDialogDate">e.g. 10/3/2015</string>
+    <string name="addDialogCheckBoxNoDueDate">No Due Date</string>
 
 </resources>

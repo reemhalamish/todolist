@@ -2,25 +2,46 @@ package il.ac.huji.todolist;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
 public class TodoListManagerActivity extends ActionBarActivity {
 
     // NOTICE: the "ADD" button is with an icon, I think it adds a little bit to the overall feeling :)
+    final static int REQUEST_ADD_ITEM = 1;
 
-    List<String> actualList = new ArrayList<String>();
+
+    List<TodoOneItem> actualList = new ArrayList<TodoOneItem>();
     customAdapter aa;
 
     @Override
@@ -30,14 +51,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
         ListView lv_todoList = (ListView) findViewById(R.id.lv_todoList);
         aa = new customAdapter(this, R.layout.one_item_in_list, R.id.tv_item, actualList);
         lv_todoList.setAdapter(aa);
-        lv_todoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int pos, long id) {
-                openDialogDeleteItem(pos);
-                return true;
-            }
-        });
+        registerForContextMenu(lv_todoList);
     }
 
     @Override
@@ -60,37 +74,81 @@ public class TodoListManagerActivity extends ActionBarActivity {
     }
 
     protected void openDialogAdd() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add...");
+        Intent addItemIntent = new Intent(this, AddDialogActivity.class);
+        startActivityForResult(addItemIntent, REQUEST_ADD_ITEM);
+    }
 
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("Add!", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                actualList.add(input.getText().toString());
+    @Override
+    protected void onActivityResult(int reqCode, int resCode, Intent data){
+        if (reqCode == 1) {
+            if (resCode == RESULT_OK) {
+                String itemText = data.getStringExtra("text");
+                String itemDueDateS = data.getStringExtra("dueDate");
+                GregorianCalendar itemDueDateG = convertStringToGreg(itemDueDateS);
+                TodoOneItem newbie = new TodoOneItem(itemText, itemDueDateG);
+                actualList.add(newbie);
                 aa.notifyDataSetChanged();
             }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        }
+    }
 
-        builder.show();
+    protected static GregorianCalendar convertStringToGreg(String s) {
+        try {
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+            Date date = formatter.parse(s);
+            GregorianCalendar toRet = new GregorianCalendar();
+            toRet.setTime(date);
+            return toRet;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+        if (v.getId() == R.id.lv_todoList) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            TodoOneItem curItem = actualList.get(info.position);
+            menu.setHeaderTitle(curItem.get_text());
+            menu.add(menu.NONE, 0, 0, "delete");
+            String callNumber = curItem.getCallNumber();
+            if (callNumber != null) {
+                menu.add(menu.NONE, 1, 1, "call "+callNumber);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        // 0 for delete, 1 for calling. [as written in onCreateContextMenu() ]
+
+        switch (menuItemIndex) {
+            case 0:
+                openDialogDeleteItem(info.position);
+                break;
+            case 1:
+                callItem(info.position);
+                break;
+        }
+        return true;
+    }
+
+    protected void callItem(int position) {
+        String phoneNumber = actualList.get(position).getCallNumber();
+        Intent dial = new Intent(Intent.ACTION_DIAL,
+                Uri.parse("tel:"+phoneNumber));
+        startActivity(dial);
     }
 
     protected void openDialogDeleteItem(final int index) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String item = actualList.get(index);
-        String msg = "You are about to DELETE " + item + ". Are you sure?";
+        TodoOneItem item = actualList.get(index);
+        String text = item.get_text();
+        String msg = "You are about to DELETE " + text + ". Are you sure?";
         builder.setTitle("Really delete?");
         builder.setMessage(msg);
         // Set up the buttons

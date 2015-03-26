@@ -1,41 +1,57 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dialog_fixed_width_major"
-    android:layout_height="@dimen/dialog_fixed_height_major"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:theme="@android:style/Theme.Dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
     tools:context=".TodoListManagerActivity">
 
     <EditText
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:id="@+id/et_dialog_insert"
-        android:text="@string/addDialogInsertTextHere"
-        android:textSize="22dp"
-        android:textColor="@color/defaultTextColor"
-        android:background="@color/defaultBG"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:id="@+id/et_add_dialog_text"
+        android:hint="@string/addDialogInsertTextHere"
         />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:id="@+id/btn_dialog_add"
-        android:layout_alignBottom="@+id/et_dialog_insert"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <DatePicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/btn_dialog_cancel"
-        android:layout_alignBottom="@+id/et_dialog_insert"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:calendarViewShown="false"
+        android:id="@+id/dp_add_dialog_date"
+        android:layout_below="@+id/et_add_dialog_text" />
+
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add!"
+                android:id="@+id/btn_add_dialog_add"
+                android:layout_below="@id/dp_add_dialog_date"
+                android:layout_alignLeft="@id/dp_add_dialog_date"
+            />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addDialogCheckBoxNoDueDate"
+            android:id="@+id/cbx_add_dialog_no_due"
+            android:layout_below="@id/dp_add_dialog_date"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/btn_add_dialog_cancel"
+            android:layout_below="@id/dp_add_dialog_date"
+            android:layout_alignRight="@id/dp_add_dialog_date"
+            />
+
+
+
 </RelativeLayout>
