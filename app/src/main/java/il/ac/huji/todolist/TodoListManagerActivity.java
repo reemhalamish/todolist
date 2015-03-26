@@ -1,36 +1,19 @@
 package il.ac.huji.todolist;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.InputType;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -74,7 +57,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
     }
 
     protected void openDialogAdd() {
-        Intent addItemIntent = new Intent(this, AddDialogActivity.class);
+        Intent addItemIntent = new Intent(this, AddNewTodoItemActivity.class);
         startActivityForResult(addItemIntent, REQUEST_ADD_ITEM);
     }
 
@@ -82,25 +65,13 @@ public class TodoListManagerActivity extends ActionBarActivity {
     protected void onActivityResult(int reqCode, int resCode, Intent data){
         if (reqCode == 1) {
             if (resCode == RESULT_OK) {
-                String itemText = data.getStringExtra("text");
-                String itemDueDateS = data.getStringExtra("dueDate");
-                GregorianCalendar itemDueDateG = convertStringToGreg(itemDueDateS);
+                String itemText = data.getStringExtra("title");
+                GregorianCalendar itemDueDateG =
+                        (GregorianCalendar) data.getSerializableExtra("dueDate");
                 TodoOneItem newbie = new TodoOneItem(itemText, itemDueDateG);
                 actualList.add(newbie);
                 aa.notifyDataSetChanged();
             }
-        }
-    }
-
-    protected static GregorianCalendar convertStringToGreg(String s) {
-        try {
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-            Date date = formatter.parse(s);
-            GregorianCalendar toRet = new GregorianCalendar();
-            toRet.setTime(date);
-            return toRet;
-        } catch (ParseException e) {
-            return null;
         }
     }
 

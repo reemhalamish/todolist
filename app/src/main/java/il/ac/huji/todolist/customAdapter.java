@@ -1,19 +1,16 @@
 package il.ac.huji.todolist;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import android.content.Context;
-import android.graphics.Color;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 
 /**
@@ -41,16 +38,16 @@ public class customAdapter extends ArrayAdapter<TodoOneItem> {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.one_item_in_list, parent, false);
-        TextView todoItem = (TextView) view.findViewById(R.id.tv_item);
         TodoOneItem curItem = _objects.get(position);
-        todoItem.setText(curItem.get_text());
-        TextView todoDate = (TextView) view.findViewById(R.id.tv_date);
+        TextView txtTodoItem = (TextView) view.findViewById(R.id.tv_item);
+        txtTodoItem.setText(curItem.get_text());
+        TextView txtTodoDueDate = (TextView) view.findViewById(R.id.tv_date);
         GregorianCalendar dueDate = curItem.get_date();
         if (dueDate == null){
-            todoDate.setText("no due date");
+            txtTodoDueDate.setText("no due date");
         } else {
             String dateToShow = DateFormat.getDateInstance(DateFormat.SHORT).format(dueDate.getTime());
-            todoDate.setText(dateToShow);
+            txtTodoDueDate.setText(dateToShow);
         }
         // ~*~ handle colors ~*~
         GregorianCalendar yesterday = new GregorianCalendar();
@@ -58,11 +55,11 @@ public class customAdapter extends ArrayAdapter<TodoOneItem> {
 
         // "a.compareTo(b)" method will yield positive if b is in the past of a
         if (dueDate == null || yesterday.compareTo(dueDate) <= 0) { // due date not passed
-            todoItem.setTextColor(_context.getResources().getColor(R.color.dueDateOkay));
-            todoDate.setTextColor(_context.getResources().getColor(R.color.dueDateOkay));
+            txtTodoItem.setTextColor(_context.getResources().getColor(R.color.dueDateOkay));
+            txtTodoDueDate.setTextColor(_context.getResources().getColor(R.color.dueDateOkay));
         } else {
-            todoItem.setTextColor(_context.getResources().getColor(R.color.dueDatePassed));
-            todoDate.setTextColor(_context.getResources().getColor(R.color.dueDatePassed));
+            txtTodoItem.setTextColor(_context.getResources().getColor(R.color.dueDatePassed));
+            txtTodoDueDate.setTextColor(_context.getResources().getColor(R.color.dueDatePassed));
         }
 
         return view;

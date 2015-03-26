@@ -1,6 +1,5 @@
 package il.ac.huji.todolist;
 
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +21,6 @@ class TodoOneItem {
         return _date;
     }
     public String getCallNumber() {
-        //TODO: if regex of numbers [0-9] and "-" is in, return it. else return null
         String regexToFind = "([Cc]all)?(\\s)*(\\+)?([0-9])[0-9\\-]*";
         Pattern findCallWordAndNumber = Pattern.compile(regexToFind);
         Matcher matcher = findCallWordAndNumber.matcher(_item);
