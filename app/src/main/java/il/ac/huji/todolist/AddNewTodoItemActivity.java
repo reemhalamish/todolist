@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -43,12 +44,13 @@ public class AddNewTodoItemActivity extends ActionBarActivity {
                 int d_months = datePicker.getMonth();
                 int d_years = datePicker.getYear();
                 GregorianCalendar dueDate = new GregorianCalendar(d_years, d_months, d_days);
+                Date retVal = dueDate.getTime();
                 if (cbxNoDue.isChecked()) {
-                    dueDate = null;
+                    retVal = null;
                 }
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("title", text);
-                returnIntent.putExtra("dueDate", dueDate);
+                returnIntent.putExtra("dueDate", retVal);
                 setResult(RESULT_OK, returnIntent);
                 finish();
             }

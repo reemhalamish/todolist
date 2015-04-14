@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -66,8 +67,12 @@ public class TodoListManagerActivity extends ActionBarActivity {
         if (reqCode == 1) {
             if (resCode == RESULT_OK) {
                 String itemText = data.getStringExtra("title");
-                GregorianCalendar itemDueDateG =
-                        (GregorianCalendar) data.getSerializableExtra("dueDate");
+                Date dateThatUserPicked = (Date) data.getSerializableExtra("dueDate");
+                GregorianCalendar itemDueDateG = null;
+                if (dateThatUserPicked != null) {
+                    itemDueDateG = new GregorianCalendar();
+                    itemDueDateG.setTime(dateThatUserPicked);
+                }
                 TodoOneItem newbie = new TodoOneItem(itemText, itemDueDateG);
                 actualList.add(newbie);
                 aa.notifyDataSetChanged();
