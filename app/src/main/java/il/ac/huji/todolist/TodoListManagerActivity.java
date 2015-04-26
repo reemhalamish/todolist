@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -24,14 +23,16 @@ public class TodoListManagerActivity extends ActionBarActivity {
     // NOTICE: the "ADD" button is with an icon, I think it adds a little bit to the overall feeling :)
     final static int REQUEST_ADD_ITEM = 1;
 
-
-    List<TodoOneItem> actualList = new ArrayList<TodoOneItem>();
+    List<TodoOneItem> actualList;
+    todoSQLiteHelper db;
     customAdapter aa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
+        db = new todoSQLiteHelper(this);
+        actualList = db.getAllTasks();
         ListView lv_todoList = (ListView) findViewById(R.id.lv_todoList);
         aa = new customAdapter(this, R.layout.one_item_in_list, R.id.tv_item, actualList);
         lv_todoList.setAdapter(aa);
@@ -73,7 +74,13 @@ public class TodoListManagerActivity extends ActionBarActivity {
                     itemDueDateG = new GregorianCalendar();
                     itemDueDateG.setTime(dateThatUserPicked);
                 }
-                TodoOneItem newbie = new TodoOneItem(itemText, itemDueDateG);
+                int itemId = actualList.size() + 1;
+                TodoOneItem newbie = new TodoOneItem(itemText, itemDueDateG, itemId);
+
+                // updating the db
+                db.addTask(newbie);
+
+                // updating the view
                 actualList.add(newbie);
                 aa.notifyDataSetChanged();
             }
@@ -86,10 +93,10 @@ public class TodoListManagerActivity extends ActionBarActivity {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             TodoOneItem curItem = actualList.get(info.position);
             menu.setHeaderTitle(curItem.get_text());
-            menu.add(menu.NONE, 0, 0, "delete");
+            menu.add(ContextMenu.NONE, 0, 0, "delete");
             String callNumber = curItem.getCallNumber();
             if (callNumber != null) {
-                menu.add(menu.NONE, 1, 1, "call "+callNumber);
+                menu.add(ContextMenu.NONE, 1, 1, "call "+callNumber);
             }
         }
 
@@ -122,7 +129,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
 
     protected void openDialogDeleteItem(final int index) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        TodoOneItem item = actualList.get(index);
+        final TodoOneItem item = actualList.get(index);
         String text = item.get_text();
         String msg = "You are about to DELETE " + text + ". Are you sure?";
         builder.setTitle("Really delete?");
@@ -131,6 +138,9 @@ public class TodoListManagerActivity extends ActionBarActivity {
         builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                //update the db and the view
+                db.deleteTask(item);
                 actualList.remove(index);
                 aa.notifyDataSetChanged();
             }

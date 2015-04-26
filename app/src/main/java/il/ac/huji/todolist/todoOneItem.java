@@ -5,17 +5,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * This calss represents one task in the list
  * Created by Reem on 24/03/2015.
  */
 class TodoOneItem {
     private String _item;
     private GregorianCalendar _date;
-    public TodoOneItem(String item, GregorianCalendar date){
+    private int _id;
+    public TodoOneItem(String item, GregorianCalendar date, int id){
         _date = date;
         _item = item;
+        _id = id;
     }
     public String get_text(){
         return _item;
+    }
+    public int getId(){
+        return _id;
     }
     public GregorianCalendar get_date() {
         return _date;
@@ -29,7 +35,7 @@ class TodoOneItem {
             regexToFind = "(\\+)?([0-9])[0-9\\-]*";
             Pattern findNumber = Pattern.compile(regexToFind);
             matcher = findNumber.matcher(call);
-            matcher.find(); //will surely find because it's part of the earlier regex
+            assert (matcher.find()); //will surely find because it's part of the earlier regex
             return matcher.group();
         } else {
             return null;
